@@ -1,0 +1,23 @@
+import socket
+
+def start_server():
+    server_ip = socket.gethostbyname(socket.gethostname()) 
+    server_port = 7777  
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((server_ip, server_port))
+        s.listen()
+        print(f"Server listening on {server_ip}:{server_port}")
+
+        conn, addr = s.accept()
+        with conn:
+            print(f"Connected by {addr}")
+            with open("LogFile.txt", 'a') as f:
+                while True:
+                    data = conn.recv(1024)
+                    if not data:
+                        break
+                    f.write(data.decode('utf-8'))
+
+if __name__ == "__main__":
+    start_server()
